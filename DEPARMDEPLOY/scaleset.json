@@ -23,7 +23,7 @@
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[parameters('scaleSet_param').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
-    "LB_pub_IP_name": "[concat(resourceGroup().name, '-PUBIP-', variables('scaleSet_name'))]",
+    "LB_pub_IP_name": "[concat(resourceGroup().name, '-', variables('scaleSet_name'),'-PUBIP')]",
     "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
     "LB_name": "[concat(resourceGroup().name, '-LB-', variables('scaleSet_name'))]",
     "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_name'))]",

@@ -23,7 +23,9 @@
           "version": "latest"
         },
         "VN_name": "DEPCOREBANKING-VN",
-        "VN_subnet_name": "DMZ"
+        "VN_subnet_name": "DMZ",
+        "ipconfiguration": "Static",
+        "privateIPAddress": "10.0.0.1"
       }
     }
   }

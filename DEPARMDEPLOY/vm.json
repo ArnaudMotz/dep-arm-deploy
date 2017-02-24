@@ -16,6 +16,20 @@
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[variables('vm').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
+    "ipconfigurationStatic": {
+      "privateIPAddress": "[variables('vm').privateIPAddress",
+      "privateIPAllocationMethod": "Static",
+      "subnet": {
+        "id": "[variables('VN_subnet_ID')]"
+      }
+    },
+    "ipconfigurationDynamic": {
+      "privateIPAllocationMethod": "Dynamic",
+      "subnet": {
+        "id": "[variables('VN_subnet_ID')]"
+      }
+    },
+    "ipconfiguration": "[variables(concat('ipconfiguration',variables('vm').ipconfiguration))]",
     "computeApiVersion": "2016-04-30-preview",
     "networkApiVersion": "2016-09-01"
 
@@ -32,12 +46,7 @@
         "ipConfigurations": [
           {
             "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[variables('VN_subnet_ID')]"
-              }
-            }
+            "properties": "[variables('ipconfiguration')]"
           }
         ]
       }

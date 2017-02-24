@@ -92,7 +92,9 @@
         "version": "latest"
       },
       "VN_name": "[variables('VN_name')]",
-      "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]"
+      "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
+      "ipconfiguration": "Static",
+      "privateIPAddress": "10.0.0.1"
     },
     "networkApiVersion": "2016-09-01"
   },
