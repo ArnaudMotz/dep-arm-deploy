@@ -20,8 +20,8 @@
         "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
         "scaleSet": {
           "name": "PROXY",
-          "customScript_URL": "",
-          "customScript_name": "",
+          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+          "customScript_name": "docker.sh",
           "instanceCount": 2,
           "vm": {
             "vmSize": "Standard_A1",
@@ -50,8 +50,8 @@
         "VN_subnet_name": "[variables('VN_subnet_Private_name')]",
         "scaleSet": {
           "name": "MS",
-          "customScript_URL": "",
-          "customScript_name": "",
+          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+          "customScript_name": "docker.sh",
           "instanceCount": 2,
           "vm": {
             "vmSize": "Standard_A1",
@@ -94,7 +94,9 @@
       "VN_name": "[variables('VN_name')]",
       "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
       "ipconfiguration": "Static",
-      "privateIPAddress": "10.0.0.1"
+      "privateIPAddress": "10.0.0.1",
+      "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+      "customScript_name": "nothing.sh"
     },
     "networkApiVersion": "2016-09-01"
   },

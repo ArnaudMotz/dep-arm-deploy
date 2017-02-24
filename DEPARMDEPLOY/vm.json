@@ -87,6 +87,25 @@
               "id": "[variables('vm_nic_ID')]"
             }
           ]
+        },
+        "extensionProfile": {
+          "extensions": [
+            {
+              "name": "customScript",
+              "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                  "fileUris": [
+                    "[concat(variables('vm').customScript_URL,variables('vm').customScript_name)]"
+                  ],
+                  "commandToExecute": "[concat('sh ',variables('vm').customScript_name)]"
+                }
+              }
+            }
+          ]
         }
       },
       "resources": [],

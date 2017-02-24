@@ -25,7 +25,9 @@
         "VN_name": "DEPCOREBANKING-VN",
         "VN_subnet_name": "DMZ",
         "ipconfiguration": "Static",
-        "privateIPAddress": "10.0.0.1"
+        "privateIPAddress": "10.0.0.1",
+        "customScript_URL": "",
+        "customScript_name": ""
       }
     }
   }
