@@ -5,8 +5,8 @@
 
   },
   "variables": {
-    "template_scaleset": "https://raw.githubusercontent.com/albinhubert/azure-arm-dep/master/test/scaleset.json",
-    "template_vm": "https://raw.githubusercontent.com/albinhubert/azure-arm-dep/master/test/vm.json",
+    "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
+    "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
     "VN_name": "[concat(resourceGroup().name,'-VN')]",
     "VN_ID": "[resourceId('Microsoft.Network/virtualNetworks', variables('VN_name'))]",
     "VN_subnet_DMZ_name": "DMZ",
