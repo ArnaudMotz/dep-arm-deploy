@@ -1,0 +1,232 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "scaleSet_param": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "scaleSet_name": "[parameters('scaleSet_param').scaleSet.name]",
+    "scaleSet_fullname": "[concat(resourceGroup().name, '-', variables('scaleSet_name'))]",
+    "scaleSet_instanceCount": "[parameters('scaleSet_param').scaleSet.instanceCount]",
+    "vm_name": "[variables('scaleSet_fullname')]",
+    "vm_vmSize": "[parameters('scaleSet_param').scaleSet.vm.vmSize]",
+    "vm_imageReference": "[parameters('scaleSet_param').scaleSet.vm.imageReference]",
+    "vm_adminUsername": "[parameters('scaleSet_param').scaleSet.vm.adminUsername]",
+    "vm_publicKeys": "[parameters('scaleSet_param').scaleSet.vm.publicKeys]",
+    "vm_nic_name": "[concat(resourceGroup().name, '-', variables('scaleSet_name'), '-NIC')]",
+    "vm_ipconfig_name": "ipconfig",
+    "publicIPAllocationMethod": "[parameters('scaleSet_param').publicIPAllocationMethod]",
+    "publicIPdomainNameLabel": "[toLower(concat(resourceGroup().name, '-', variables('scaleSet_name')))]",
+    "VN_name": "[parameters('scaleSet_param').VN_name]",
+    "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
+    "VN_subnet_name": "[parameters('scaleSet_param').VN_subnet_name]",
+    "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
+    "LB_pub_IP_name": "[concat(resourceGroup().name, '-PUBIP-', variables('scaleSet_name'))]",
+    "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
+    "LB_name": "[concat(resourceGroup().name, '-LB-', variables('scaleSet_name'))]",
+    "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_name'))]",
+    "LB_frontEndIPConfig_name": "LoadBalancerFrontEnd",
+    "LB_frontEndIPConfig_ID": "[concat(variables('LB_ID'),'/frontendIPConfigurations/',variables('LB_frontEndIPConfig_name'))]",
+    "LB_backendAddressPool": "LoadBalancerBackend",
+    "LB_backendAddressPool_ID": "[concat(variables('LB_ID'),'/backendAddressPools/',variables('LB_backendAddressPool'))]",
+    "LB_probe_http": "HTTP",
+    "LB_probe_http_ID": "[concat(variables('LB_ID'),'/probes/',variables('LB_probe_http'))]",
+    "LB_probe_https": "HTTPS",
+    "LB_probe_https_ID": "[concat(variables('LB_ID'),'/probes/',variables('LB_probe_https'))]",
+    "customScript_URL": "[parameters('scaleSet_param').scaleSet.customScript_URL]",
+    "customScript_name": "[parameters('scaleSet_param').scaleSet.customScript_name]",
+    "computeApiVersion": "2016-04-30-preview",
+    "networkApiVersion": "2016-09-01",
+    "storageApiVersion": "2015-06-15"
+  },
+  "resources": [
+    {
+      "comments": "",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('LB_pub_IP_name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "[variables('publicIPAllocationMethod')]"
+
+      }
+    },
+    {
+      "comments": "",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('LB_name')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[variables('LB_pub_IP_ID')]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('LB_frontEndIPConfig_name')]",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[variables('LB_pub_IP_ID')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('LB_backendAddressPool')]"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "HTTP",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('LB_frontEndIPConfig_ID')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('LB_backendAddressPool_ID')]"
+              },
+              "probe": {
+                "id": "[variables('LB_probe_http_ID')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 80,
+              "backendPort": 80,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "HTTPS",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('LB_frontEndIPConfig_ID')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('LB_backendAddressPool_ID')]"
+              },
+              "probe": {
+                "id": "[variables('LB_probe_https_ID')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": 443,
+              "backendPort": 443,
+              "enableFloatingIP": false
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "[variables('LB_probe_http')]",
+            "properties": {
+              "protocol": "Tcp",
+              "port": 80,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          },
+          {
+            "name": "[variables('LB_probe_https')]",
+            "properties": {
+              "protocol": "Tcp",
+              "port": 443,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
+        ]
+      },
+      "resources": []
+    },
+    {
+      "comments": "",
+      "apiVersion": "[variables('computeApiVersion')]",
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "name": "[variables('scaleSet_fullname')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[variables('LB_ID')]"
+      ],
+      "sku": {
+        "name": "[variables('vm_vmSize')]",
+        "tier": "Standard",
+        "capacity": "[variables('scaleSet_instanceCount')]"
+      },
+      "properties": {
+        "overprovision": "true",
+        "upgradePolicy": {
+          "mode": "Manual"
+        },
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "FromImage"
+            },
+            "imageReference": "[variables('vm_imageReference')]"
+          },
+          "osProfile": {
+            "computerNamePrefix": "[variables('vm_name')]",
+            "adminUsername": "[variables('vm_adminUsername')]",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": "true",
+              "ssh": {
+                "publicKeys": "[variables('vm_publicKeys')]"
+              }
+            }
+          },
+          "networkProfile": {
+            "networkInterfaceConfigurations": [
+              {
+                "name": "[variables('vm_nic_name')]",
+                "properties": {
+                  "primary": "true",
+                  "ipConfigurations": [
+                    {
+                      "name": "[variables('vm_ipconfig_name')]",
+                      "properties": {
+                        "subnet": {
+                          "id": "[variables('VN_subnet_ID')]"
+                        },
+                        "loadBalancerBackendAddressPools": [
+                          {
+                            "id": "[variables('LB_backendAddressPool_ID')]"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "name": "customScript",
+                "properties": {
+                  "publisher": "Microsoft.Azure.Extensions",
+                  "type": "CustomScript",
+                  "typeHandlerVersion": "2.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    "fileUris": [
+                      "[concat(variables('customScript_URL'),variables('customScript_name'))]"
+                    ],
+                    "commandToExecute": "[concat('sh ',variables('customScript_name'))]"
+                  }
+                }
+              }
+            ]
+          }
+        }
+
+      }
+
+    }
+  ],
+
+  "outputs": {
+
+  }
+}

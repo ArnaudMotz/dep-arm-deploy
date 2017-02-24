@@ -1,0 +1,91 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vm_param": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "vm": "[parameters('vm_param')]",
+    "vm_fullname": "[concat(resourceGroup().name, '-', variables('vm').name)]",
+    "vm_disk_name": "[concat(variables('vm_fullname'),'-OS')]",
+    "vm_nic_name": "[concat(variables('vm_fullname'),'-INT')]",
+    "vm_nic_ID": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_nic_name'))]",
+    "VN_name": "[variables('vm').VN_name]",
+    "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
+    "VN_subnet_name": "[variables('vm').VN_subnet_name]",
+    "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
+    "computeApiVersion": "2016-04-30-preview",
+    "networkApiVersion": "2016-09-01"
+
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('networkApiVersion')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('vm_nic_name')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('VN_subnet_ID')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "comments": "",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vm_fullname')]",
+      "apiVersion": "[variables('computeApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('vm').tags]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[variables('vm').size]"
+        },
+        "storageProfile": {
+          "imageReference": "[variables('vm').imageReference]",
+          "osDisk": {
+            "name": "[variables('vm_disk_name')]",
+            "createOption": "FromImage",
+            "osType": "Linux",
+            "caching": "ReadWrite"
+          }
+        },
+        "osProfile": {
+          "computerName": "[variables('vm_fullname')]",
+          "adminUsername": "[variables('vm').adminUserName]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": "true",
+            "ssh": {
+              "publicKeys": "[variables('vm').publicKeys]"
+            }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[variables('vm_nic_ID')]"
+            }
+          ]
+        }
+      },
+      "resources": [],
+      "dependsOn": [
+        "[variables('vm_nic_ID')]"
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}

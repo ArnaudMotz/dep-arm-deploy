@@ -1,8 +1,226 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "variables": {},
-  "resources": [],
-  "outputs": {}
+  "parameters": {
+
+  },
+  "variables": {
+    "template_scaleset": "https://raw.githubusercontent.com/albinhubert/azure-arm-dep/master/test/scaleset.json",
+    "template_vm": "https://raw.githubusercontent.com/albinhubert/azure-arm-dep/master/test/vm.json",
+    "VN_name": "[concat(resourceGroup().name,'-VN')]",
+    "VN_ID": "[resourceId('Microsoft.Network/virtualNetworks', variables('VN_name'))]",
+    "VN_subnet_DMZ_name": "DMZ",
+    "VN_subnet_Private_name": "PRIVATE",
+    "NSG_name": "[concat(resourceGroup().name,'-NSG')]",
+    "NSG_ID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('NSG_name'))]",
+    "proxy": {
+      "scaleSet_param": {
+        "publicIPAllocationMethod": "Static",
+        "VN_name": "[variables('VN_name')]",
+        "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
+        "scaleSet": {
+          "name": "PROXY",
+          "customScript_URL": "",
+          "customScript_name": "",
+          "instanceCount": 2,
+          "vm": {
+            "vmSize": "Standard_A1",
+            "adminUsername": "depadmin",
+            "publicKeys": [
+              {
+                "path": "/home/depadmin/.ssh/authorized_keys",
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+              }
+            ],
+            "imageReference": {
+              "publisher": "SUSE",
+              "offer": "SLES",
+              "sku": "12-SP2",
+              "version": "latest"
+            }
+          }
+        }
+
+      }
+    },
+    "microservices": {
+      "scaleSet_param": {
+        "publicIPAllocationMethod": "Static",
+        "VN_name": "[variables('VN_name')]",
+        "VN_subnet_name": "[variables('VN_subnet_Private_name')]",
+        "scaleSet": {
+          "name": "MS",
+          "customScript_URL": "",
+          "customScript_name": "",
+          "instanceCount": 2,
+          "vm": {
+            "vmSize": "Standard_A1",
+            "adminUsername": "depadmin",
+            "publicKeys": [
+              {
+                "path": "/home/depadmin/.ssh/authorized_keys",
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+              }
+            ],
+            "imageReference": {
+              "publisher": "SUSE",
+              "offer": "SLES",
+              "sku": "12-SP2",
+              "version": "latest"
+            }
+          }
+        }
+      }
+    },
+    "rebound": {
+      "name": "REBOUND",
+      "tags": {
+        "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
+      },
+      "Size": "Standard_A1",
+      "adminUsername": "depadmin",
+      "publicKeys": [
+        {
+          "path": "/home/depadmin/.ssh/authorized_keys",
+          "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+        }
+      ],
+      "imageReference": {
+        "publisher": "SUSE",
+        "offer": "SLES",
+        "sku": "12-SP2",
+        "version": "latest"
+      },
+      "VN_name": "DEPCOREBANKING-VN",
+      "VN_subnet_name": "DMZ"
+    },
+    "networkApiVersion": "2016-09-01"
+  },
+  "resources": [
+    {
+      "comments": "",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('NSG_name')]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "allow_ssh_proxy-rebound",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "10.0.0.1",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "resources": [],
+      "dependsOn": []
+    },
+    {
+      "comments": "",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('VN_name')]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[variables('NSG_ID')]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/24",
+            "10.0.1.0/24"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('VN_subnet_DMZ_name')]",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24",
+              "networkSecurityGroup": {
+                "id": "[variables('NSG_ID')]"
+              }
+            }
+          },
+          {
+            "name": "[variables('VN_subnet_Private_name')]",
+            "properties": {
+              "addressPrefix": "10.0.1.0/24",
+              "networkSecurityGroup": {
+                "id": "[variables('NSG_ID')]"
+              }
+            }
+          }
+        ]
+      },
+      "resources": []
+    },
+    {
+      "name": "scaleset_proxy",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_scaleset')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "scaleSet_param": {
+            "value": "[variables('proxy').scaleSet_param]"
+          }
+        }
+      }
+    },
+    {
+      "name": "scaleset_ms",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_scaleset')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "scaleSet_param": {
+            "value": "[variables('microservices').scaleSet_param]"
+          }
+        }
+      }
+    },
+    {
+      "name": "VM_SSH_REBOUND",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_vm')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "scaleSet_param": {
+            "value": "[variables('vm_rebound')]"
+          }
+        }
+      }
+    }
+  ]
 }

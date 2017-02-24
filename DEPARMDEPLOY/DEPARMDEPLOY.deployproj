@@ -31,6 +31,11 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="customScript\docker.sh" />
+    <None Include="scaleset.json" />
+    <None Include="scaleset.parameters.json" />
+    <None Include="vm.json" />
+    <None Include="vm.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
