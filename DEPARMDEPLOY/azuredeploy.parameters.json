@@ -2,29 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vm_rebound": {
-      "value": {
-        "name": "REBOUND",
-        "tags": {
-          "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
-        },
-        "Size": "Standard_A1",
-        "adminUsername": "depadmin",
-        "publicKeys": [
-          {
-            "path": "/home/depadmin/.ssh/authorized_keys",
-            "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
-          }
-        ],
-        "imageReference": {
-          "publisher": "SUSE",
-          "offer": "SLES",
-          "sku": "12-SP2",
-          "version": "latest"
-        },
-        "VN_name": "DEPCOREBANKING-VN",
-        "VN_subnet_name": "DMZ"
-      }
-    }
+
   }
 }

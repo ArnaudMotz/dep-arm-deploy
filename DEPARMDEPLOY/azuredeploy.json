@@ -72,7 +72,7 @@
         }
       }
     },
-    "rebound": {
+    "vm_rebound": {
       "name": "REBOUND",
       "tags": {
         "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
@@ -91,8 +91,8 @@
         "sku": "12-SP2",
         "version": "latest"
       },
-      "VN_name": "DEPCOREBANKING-VN",
-      "VN_subnet_name": "DMZ"
+      "VN_name": "[variables('VN_name')]",
+      "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]"
     },
     "networkApiVersion": "2016-09-01"
   },
@@ -216,7 +216,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "scaleSet_param": {
+          "vm_param": {
             "value": "[variables('vm_rebound')]"
           }
         }
