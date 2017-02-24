@@ -94,7 +94,7 @@
       "VN_name": "[variables('VN_name')]",
       "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
       "ipconfiguration": "Static",
-      "privateIPAddress": "10.0.0.1",
+      "privateIPAddress": "10.0.0.100",
       "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
       "customScript_name": "nothing.sh"
     },

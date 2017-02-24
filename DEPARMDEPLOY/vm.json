@@ -17,7 +17,7 @@
     "VN_subnet_name": "[variables('vm').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
     "ipconfigurationStatic": {
-      "privateIPAddress": "[variables('vm').privateIPAddress",
+      "privateIPAddress": "[variables('vm').privateIPAddress]",
       "privateIPAllocationMethod": "Static",
       "subnet": {
         "id": "[variables('VN_subnet_ID')]"
