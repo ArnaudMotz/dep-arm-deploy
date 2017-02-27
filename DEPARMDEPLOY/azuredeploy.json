@@ -72,8 +72,8 @@
         }
       }
     },
-    "vm_rebound": {
-      "name": "REBOUND",
+    "vm_proxy_master": {
+      "name": "PROXY-MASTER",
       "tags": {
         "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
       },
@@ -96,7 +96,7 @@
       "ipconfiguration": "Static",
       "privateIPAddress": "10.0.0.100",
       "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-      "customScript_name": "nothing.sh"
+      "customScript_name": "docker.sh"
     },
     "networkApiVersion": "2016-09-01"
   },
@@ -207,7 +207,7 @@
       }
     },
     {
-      "name": "VM_SSH_REBOUND",
+      "name": "vmproxymaster",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -221,7 +221,7 @@
         },
         "parameters": {
           "vm_param": {
-            "value": "[variables('vm_rebound')]"
+            "value": "[variables('vm_proxy_master')]"
           }
         }
       }

@@ -9,7 +9,10 @@
   "variables": {
     "vm": "[parameters('vm_param')]",
     "vm_fullname": "[concat(resourceGroup().name, '-', variables('vm').name)]",
+    "vm_ID": "[resourceId('Microsoft.Compute/virtualMachines',variables('vm_fullname'))]",
     "vm_disk_name": "[concat(variables('vm_fullname'),'-OS')]",
+    "avail_name": "[concat(resourceGroup().name, '-', variables('vm').name, '-AV')]",
+    "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
     "vm_nic_name": "[concat(variables('vm_fullname'),'-INT')]",
     "vm_nic_ID": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_nic_name'))]",
     "VN_name": "[variables('vm').VN_name]",
@@ -36,12 +39,27 @@
   },
   "resources": [
     {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('avail_name')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "platformFaultDomainCount": "2",
+        "platformUpdateDomainCount": "5",
+        "managed": "true"
+      }
+    },
+    {
       "apiVersion": "[variables('networkApiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('vm_nic_name')]",
+      "name": "[concat(variables('vm_nic_name'),copyIndex(1))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
       ],
+      "copy": {
+        "name": "niccopy",
+        "count": "[variables('vm').count]"
+      },
       "properties": {
         "ipConfigurations": [
           {
@@ -54,25 +72,36 @@
     {
       "comments": "",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vm_fullname')]",
+      "name": "[concat(variables('vm_fullname'),copyIndex(1))]",
       "apiVersion": "[variables('computeApiVersion')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('vm').tags]",
+      "dependsOn": [
+        "niccopy",
+        "[variables('avail_ID')]"
+      ],
+      "copy": {
+        "name": "vmcopy",
+        "count": "[variables('vm').count]"
+      },
       "properties": {
+        "availabilitySet": {
+          "id": "[variables('avail_ID')]"
+        },
         "hardwareProfile": {
           "vmSize": "[variables('vm').size]"
         },
         "storageProfile": {
           "imageReference": "[variables('vm').imageReference]",
           "osDisk": {
-            "name": "[variables('vm_disk_name')]",
+            "name": "[concat(variables('vm_disk_name'),copyIndex(1))]",
             "createOption": "FromImage",
             "osType": "Linux",
             "caching": "ReadWrite"
           }
         },
         "osProfile": {
-          "computerName": "[variables('vm_fullname')]",
+          "computerName": "[concat(variables('vm_fullname'),copyIndex(1))]",
           "adminUsername": "[variables('vm').adminUserName]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": "true",
@@ -84,34 +113,38 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[variables('vm_nic_ID')]"
-            }
-          ]
-        },
-        "extensionProfile": {
-          "extensions": [
-            {
-              "name": "customScript",
-              "properties": {
-                "publisher": "Microsoft.Azure.Extensions",
-                "type": "CustomScript",
-                "typeHandlerVersion": "2.0",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                  "fileUris": [
-                    "[concat(variables('vm').customScript_URL,variables('vm').customScript_name)]"
-                  ],
-                  "commandToExecute": "[concat('sh ',variables('vm').customScript_name)]"
-                }
-              }
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('vm_nic_name'), copyindex(1)))]"
             }
           ]
         }
       },
-      "resources": [],
+      "resources": []
+    },
+    {
+      "comments": "",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vm_fullname'),'/customscript',copyIndex(1))]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
       "dependsOn": [
-        "[variables('vm_nic_ID')]"
-      ]
+        "vmcopy"
+      ],
+      "copy": {
+        "name": "scriptcopy",
+        "count": "[variables('vm').count]"
+      },
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(variables('vm').customScript_URL,variables('vm').customScript_name)]"
+          ],
+          "commandToExecute": "[concat('sh ',variables('vm').customScript_name)]"
+        }
+      }
     }
   ],
   "outputs": {

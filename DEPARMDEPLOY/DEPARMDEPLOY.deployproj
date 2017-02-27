@@ -33,10 +33,10 @@
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <None Include="customScript\docker.sh" />
-    <None Include="scaleset.json" />
-    <None Include="scaleset.parameters.json" />
-    <None Include="vm.json" />
-    <None Include="vm.parameters.json" />
+    <Content Include="scaleset.json" />
+    <Content Include="scaleset.parameters.json" />
+    <Content Include="vm.json" />
+    <Content Include="vm.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

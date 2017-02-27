@@ -6,7 +6,7 @@
     "scaleSet_param": {
       "value": {
         "publicIPAllocationMethod": "Static",
-        "VN_name": "DEPCOREBANKING-VN",
+        "VN_name": "DEPARMDEPLOY-VN",
         "VN_subnet_name": "DMZ",
         "LB_privateIPAddress": "10.0.0.1",
         "scaleSet": {

@@ -4,7 +4,8 @@
   "parameters": {
     "vm_param": {
       "value": {
-        "name": "REBOUND",
+        "name": "MASTER",
+        "count": 1,
         "tags": {
           "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
         },
@@ -22,10 +23,10 @@
           "sku": "12-SP2",
           "version": "latest"
         },
-        "VN_name": "DEPCOREBANKING-VN",
+        "VN_name": "DEPARMDEPLOY-VN",
         "VN_subnet_name": "DMZ",
         "ipconfiguration": "Static",
-        "privateIPAddress": "10.0.0.1",
+        "privateIPAddress": "10.0.0.100",
         "customScript_URL": "",
         "customScript_name": ""
       }
