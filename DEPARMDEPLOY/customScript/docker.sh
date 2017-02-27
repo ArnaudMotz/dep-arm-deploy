@@ -1,6 +1,4 @@
 #!/bin/sh
 set -e
 
-zypper install -y docker
-chkconfig --set docker on
-service docker start
+apt-get -y install docker-engine
