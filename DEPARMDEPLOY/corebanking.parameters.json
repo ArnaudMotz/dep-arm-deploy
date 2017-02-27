@@ -94,7 +94,7 @@
           "customScript_name": "ubuntu_installdocker.sh",
           "instanceCount": 2,
           "vm": {
-            "vmSize": "Standard_A2m_v2",
+            "vmSize": "Standard_A2",
             "adminUsername": "depadmin",
             "publicKeys": [
               {
