@@ -2,6 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "scalesets": {
+      "type": "object"
+    },
+    "VMs": {
+      "type": "object"
+    }
 
   },
   "variables": {
@@ -13,119 +19,6 @@
     "VN_subnet_Private_name": "PRIVATE",
     "NSG_name": "[concat(resourceGroup().name,'-NSG')]",
     "NSG_ID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('NSG_name'))]",
-    "scaleset_proxy": {
-      "scaleSet_param": {
-        "publicIPAllocationMethod": "Static",
-        "VN_name": "[variables('VN_name')]",
-        "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
-        "scaleSet": {
-          "name": "PROXY",
-          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "docker.sh",
-          "instanceCount": 2,
-          "vm": {
-            "vmSize": "Standard_A1",
-            "adminUsername": "depadmin",
-            "publicKeys": [
-              {
-                "path": "/home/depadmin/.ssh/authorized_keys",
-                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
-              }
-            ],
-            "imageReference": {
-              "publisher": "SUSE",
-              "offer": "SLES",
-              "sku": "12-SP2",
-              "version": "latest"
-            }
-          }
-        }
-
-      }
-    },
-    "scaleset_microservices": {
-      "scaleSet_param": {
-        "publicIPAllocationMethod": "Static",
-        "VN_name": "[variables('VN_name')]",
-        "VN_subnet_name": "[variables('VN_subnet_Private_name')]",
-        "scaleSet": {
-          "name": "MS",
-          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "docker.sh",
-          "instanceCount": 2,
-          "vm": {
-            "vmSize": "Standard_A1",
-            "adminUsername": "depadmin",
-            "publicKeys": [
-              {
-                "path": "/home/depadmin/.ssh/authorized_keys",
-                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
-              }
-            ],
-            "imageReference": {
-              "publisher": "SUSE",
-              "offer": "SLES",
-              "sku": "12-SP2",
-              "version": "latest"
-            }
-          }
-        }
-      }
-    },
-    "vm_proxy_master": {
-      "name": "PROXY-MASTER",
-      "tags": {
-        "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
-      },
-      "count": 1,
-      "Size": "Standard_A1",
-      "adminUsername": "depadmin",
-      "publicKeys": [
-        {
-          "path": "/home/depadmin/.ssh/authorized_keys",
-          "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
-        }
-      ],
-      "imageReference": {
-        "publisher": "SUSE",
-        "offer": "SLES",
-        "sku": "12-SP2",
-        "version": "latest"
-      },
-      "VN_name": "[variables('VN_name')]",
-      "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
-      "ipconfiguration": "Static",
-      "privateIPAddress": "10.0.0.100",
-      "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-      "customScript_name": "docker.sh"
-    },
-    "vm_ms_master": {
-      "name": "MS-MASTER",
-      "tags": {
-        "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
-      },
-      "count": 1,
-      "Size": "Standard_A1",
-      "adminUsername": "depadmin",
-      "publicKeys": [
-        {
-          "path": "/home/depadmin/.ssh/authorized_keys",
-          "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
-        }
-      ],
-      "imageReference": {
-        "publisher": "SUSE",
-        "offer": "SLES",
-        "sku": "12-SP2",
-        "version": "latest"
-      },
-      "VN_name": "[variables('VN_name')]",
-      "VN_subnet_name": "[variables('VN_subnet_Private_name')]",
-      "ipconfiguration": "Static",
-      "privateIPAddress": "10.0.1.100",
-      "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-      "customScript_name": "docker.sh"
-    },
     "networkApiVersion": "2016-09-01"
   },
   "resources": [
@@ -144,7 +37,7 @@
               "sourcePortRange": "*",
               "destinationPortRange": "22",
               "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "10.0.0.1",
+              "destinationAddressPrefix": "10.0.0.100",
               "access": "Allow",
               "priority": 100,
               "direction": "Inbound"
@@ -195,12 +88,16 @@
       "resources": []
     },
     {
-      "name": "scaleset_proxy",
+      "name": "[concat('scaleset','-',parameters('scalesets')[copyIndex()].name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "[variables('VN_ID')]"
       ],
+      "copy": {
+        "name": "scalesetcopy",
+        "count": "[length(parameters('scalesets'))]"
+      },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -208,39 +105,26 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "scaleSet_param": {
-            "value": "[variables('scaleset_proxy').scaleSet_param]"
+          "scaleset": {
+            "value": "[parameters('scalesets')[copyIndex()]]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
           }
         }
       }
     },
     {
-      "name": "scaleset_ms",
+      "name": "[concat('vm','-',parameters('VMs')[copyIndex()].name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "[variables('VN_ID')]"
       ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('template_scaleset')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "scaleSet_param": {
-            "value": "[variables('scaleset_microservices').scaleSet_param]"
-          }
-        }
-      }
-    },
-    {
-      "name": "vmproxymaster",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "[variables('VN_ID')]"
-      ],
+      "copy": {
+        "name": "VMscopy",
+        "count": "[length(parameters('VMs'))]"
+      },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -248,28 +132,11 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "vm_param": {
-            "value": "[variables('vm_proxy_master')]"
-          }
-        }
-      }
-    },
-    {
-      "name": "vmmsmaster",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "[variables('VN_ID')]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('template_vm')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "vm_param": {
-            "value": "[variables('vm_ms_master')]"
+          "VM": {
+            "value": "[parameters('VMs')[copyIndex()]]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
           }
         }
       }

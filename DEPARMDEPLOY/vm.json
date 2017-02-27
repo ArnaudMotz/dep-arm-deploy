@@ -2,12 +2,15 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vm_param": {
+    "VM": {
+      "type": "object"
+    },
+    "VN_name": {
       "type": "object"
     }
   },
   "variables": {
-    "vm": "[parameters('vm_param')]",
+    "vm": "[parameters('VM')]",
     "vm_fullname": "[concat(resourceGroup().name, '-', variables('vm').name)]",
     "vm_ID": "[resourceId('Microsoft.Compute/virtualMachines',variables('vm_fullname'))]",
     "vm_disk_name": "[concat(variables('vm_fullname'),'-OS')]",
@@ -15,7 +18,7 @@
     "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
     "vm_nic_name": "[concat(variables('vm_fullname'),'-INT')]",
     "vm_nic_ID": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_nic_name'))]",
-    "VN_name": "[variables('vm').VN_name]",
+    "VN_name": "[parameters('VN_name')]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[variables('vm').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",

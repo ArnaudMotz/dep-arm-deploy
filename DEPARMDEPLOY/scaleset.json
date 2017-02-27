@@ -2,26 +2,29 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "scaleSet_param": {
+    "scaleset": {
       "type": "object"
+    },
+    "VN_name": {
+      "type": "string"
     }
   },
   "variables": {
-    "scaleSet_name": "[parameters('scaleSet_param').scaleSet.name]",
+    "scaleSet_name": "[parameters('scaleset').name]",
     "scaleSet_fullname": "[concat(resourceGroup().name, '-', variables('scaleSet_name'))]",
-    "scaleSet_instanceCount": "[parameters('scaleSet_param').scaleSet.instanceCount]",
+    "scaleSet_instanceCount": "[parameters('scaleset').instanceCount]",
     "vm_name": "[variables('scaleSet_fullname')]",
-    "vm_vmSize": "[parameters('scaleSet_param').scaleSet.vm.vmSize]",
-    "vm_imageReference": "[parameters('scaleSet_param').scaleSet.vm.imageReference]",
-    "vm_adminUsername": "[parameters('scaleSet_param').scaleSet.vm.adminUsername]",
-    "vm_publicKeys": "[parameters('scaleSet_param').scaleSet.vm.publicKeys]",
+    "vm_vmSize": "[parameters('scaleset').vm.vmSize]",
+    "vm_imageReference": "[parameters('scaleset').vm.imageReference]",
+    "vm_adminUsername": "[parameters('scaleset').vm.adminUsername]",
+    "vm_publicKeys": "[parameters('scaleset').vm.publicKeys]",
     "vm_nic_name": "[concat(resourceGroup().name, '-', variables('scaleSet_name'), '-NIC')]",
     "vm_ipconfig_name": "ipconfig",
-    "publicIPAllocationMethod": "[parameters('scaleSet_param').publicIPAllocationMethod]",
+    "publicIPAllocationMethod": "[parameters('scaleset').publicIPAllocationMethod]",
     "publicIPdomainNameLabel": "[toLower(concat(resourceGroup().name, '-', variables('scaleSet_name')))]",
-    "VN_name": "[parameters('scaleSet_param').VN_name]",
+    "VN_name": "[parameters('VN_name')]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
-    "VN_subnet_name": "[parameters('scaleSet_param').VN_subnet_name]",
+    "VN_subnet_name": "[parameters('scaleset').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
     "LB_pub_IP_name": "[concat(resourceGroup().name, '-', variables('scaleSet_name'),'-PUBIP')]",
     "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
@@ -35,8 +38,8 @@
     "LB_probe_http_ID": "[concat(variables('LB_ID'),'/probes/',variables('LB_probe_http'))]",
     "LB_probe_https": "HTTPS",
     "LB_probe_https_ID": "[concat(variables('LB_ID'),'/probes/',variables('LB_probe_https'))]",
-    "customScript_URL": "[parameters('scaleSet_param').scaleSet.customScript_URL]",
-    "customScript_name": "[parameters('scaleSet_param').scaleSet.customScript_name]",
+    "customScript_URL": "[parameters('scaleset').customScript_URL]",
+    "customScript_name": "[parameters('scaleset').customScript_name]",
     "computeApiVersion": "2016-04-30-preview",
     "networkApiVersion": "2016-09-01",
     "storageApiVersion": "2015-06-15"
