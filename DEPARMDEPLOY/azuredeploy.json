@@ -8,7 +8,6 @@
     "VMs": {
       "type": "array"
     }
-
   },
   "variables": {
     "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",

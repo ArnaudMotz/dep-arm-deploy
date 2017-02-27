@@ -30,6 +30,7 @@
         "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
         "customScript_name": "nothing.sh"
       }
-    }
+    },
+    "VN_name": {"value": "DEPARMDEPLOY-VN"}
   }
 }
