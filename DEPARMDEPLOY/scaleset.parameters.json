@@ -21,9 +21,9 @@
             }
           ],
           "imageReference": {
-            "publisher": "SUSE",
-            "offer": "SLES",
-            "sku": "12-SP2",
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "16.04-LTS",
             "version": "latest"
           }
         }
