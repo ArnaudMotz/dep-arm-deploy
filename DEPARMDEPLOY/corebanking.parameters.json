@@ -15,7 +15,7 @@
           "ipconfiguration": "Dynamic",
           "privateIPAddress": "",
           "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "docker.sh",
+          "customScript_name": "nothing.sh",
           "adminUsername": "depadmin",
           "publicKeys": [
             {

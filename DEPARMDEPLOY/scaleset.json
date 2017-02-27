@@ -26,7 +26,7 @@
     "vm_ipconfig_name": "ipconfig",
     "publicIPAllocationMethod": "[parameters('scaleset').publicIPAllocationMethod]",
     "publicIPdomainNameLabel": "[toLower(concat(resourceGroup().name, '-', variables('scaleSet_name')))]",
-    "LB_pub_IP_name": "[concat(resourceGroup().name, '-', variables('scaleSet_name'),'-PUBIP')]",
+    "LB_pub_IP_name": "[concat(variables('scaleSet_fullname'),,'-PUBIP')]",
     "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
     "LB_name": "[concat(variables('scaleSet_fullname'), '-LB')]",
     "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_name'))]",
