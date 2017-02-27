@@ -6,7 +6,7 @@
       "type": "object"
     },
     "VN_name": {
-      "type": "object"
+      "type": "string"
     }
   },
   "variables": {
