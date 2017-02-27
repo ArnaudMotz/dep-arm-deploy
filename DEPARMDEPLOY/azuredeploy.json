@@ -13,7 +13,7 @@
     "VN_subnet_Private_name": "PRIVATE",
     "NSG_name": "[concat(resourceGroup().name,'-NSG')]",
     "NSG_ID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('NSG_name'))]",
-    "proxy": {
+    "scaleset_proxy": {
       "scaleSet_param": {
         "publicIPAllocationMethod": "Static",
         "VN_name": "[variables('VN_name')]",
@@ -43,7 +43,7 @@
 
       }
     },
-    "microservices": {
+    "scaleset_microservices": {
       "scaleSet_param": {
         "publicIPAllocationMethod": "Static",
         "VN_name": "[variables('VN_name')]",
@@ -77,6 +77,7 @@
       "tags": {
         "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
       },
+      "count": 1,
       "Size": "Standard_A1",
       "adminUsername": "depadmin",
       "publicKeys": [
@@ -95,6 +96,33 @@
       "VN_subnet_name": "[variables('VN_subnet_DMZ_name')]",
       "ipconfiguration": "Static",
       "privateIPAddress": "10.0.0.100",
+      "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+      "customScript_name": "docker.sh"
+    },
+    "vm_ms_master": {
+      "name": "MS-MASTER",
+      "tags": {
+        "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
+      },
+      "count": 1,
+      "Size": "Standard_A1",
+      "adminUsername": "depadmin",
+      "publicKeys": [
+        {
+          "path": "/home/depadmin/.ssh/authorized_keys",
+          "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+        }
+      ],
+      "imageReference": {
+        "publisher": "SUSE",
+        "offer": "SLES",
+        "sku": "12-SP2",
+        "version": "latest"
+      },
+      "VN_name": "[variables('VN_name')]",
+      "VN_subnet_name": "[variables('VN_subnet_Private_name')]",
+      "ipconfiguration": "Static",
+      "privateIPAddress": "10.0.1.100",
       "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
       "customScript_name": "docker.sh"
     },
@@ -181,7 +209,7 @@
         },
         "parameters": {
           "scaleSet_param": {
-            "value": "[variables('proxy').scaleSet_param]"
+            "value": "[variables('scaleset_proxy').scaleSet_param]"
           }
         }
       }
@@ -201,7 +229,7 @@
         },
         "parameters": {
           "scaleSet_param": {
-            "value": "[variables('microservices').scaleSet_param]"
+            "value": "[variables('scaleset_microservices').scaleSet_param]"
           }
         }
       }
@@ -222,6 +250,26 @@
         "parameters": {
           "vm_param": {
             "value": "[variables('vm_proxy_master')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "vmmsmaster",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_vm')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vm_param": {
+            "value": "[variables('vm_ms_master')]"
           }
         }
       }

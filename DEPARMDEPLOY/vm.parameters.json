@@ -5,7 +5,7 @@
     "vm_param": {
       "value": {
         "name": "MASTER",
-        "count": 1,
+        "count": 2,
         "tags": {
           "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
         },
@@ -25,10 +25,10 @@
         },
         "VN_name": "DEPARMDEPLOY-VN",
         "VN_subnet_name": "DMZ",
-        "ipconfiguration": "Static",
-        "privateIPAddress": "10.0.0.100",
-        "customScript_URL": "",
-        "customScript_name": ""
+        "ipconfiguration": "Dynamic",
+        "privateIPAddress": "",
+        "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+        "customScript_name": "nothing.sh"
       }
     }
   }

@@ -11,8 +11,8 @@
         "LB_privateIPAddress": "10.0.0.1",
         "scaleSet": {
           "name": "PROXY",
-          "customScript_URL": "",
-          "customScript_name": "",
+          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+          "customScript_name": "nothing.sh",
           "instanceCount": 2,
           "vm": {
             "vmSize": "Standard_A1",

@@ -123,7 +123,7 @@
     {
       "comments": "",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_fullname'),'/customscript',copyIndex(1))]",
+      "name": "[concat(variables('vm_fullname'),copyIndex(1),'/customscript')]",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
@@ -140,7 +140,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(variables('vm').customScript_URL,variables('vm').customScript_name)]"
+            "[concat(variables('vm').customScript_URL, variables('vm').customScript_name)]"
           ],
           "commandToExecute": "[concat('sh ',variables('vm').customScript_name)]"
         }
@@ -148,5 +148,9 @@
     }
   ],
   "outputs": {
+    "fileuris": {
+      "value": "[concat(variables('vm').customScript_URL, variables('vm').customScript_name)]",
+      "type": "string"
+    }
   }
 }
