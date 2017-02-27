@@ -12,7 +12,7 @@
           "count": 1,
           "Size": "Standard_A1",
           "VN_subnet_name": "DMZ",
-          "ipconfiguration": "Dynamic",
+          "ipconfiguration": "Static",
           "privateIPAddress": "",
           "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
           "customScript_name": "nothing.sh",
@@ -36,7 +36,7 @@
             "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
           },
           "count": 1,
-          "Size": "Standard_A1",
+          "Size": "Standard_A2m_v2",
           "VN_subnet_name": "DMZ",
           "ipconfiguration": "Dynamic",
           "privateIPAddress": "",
@@ -62,12 +62,12 @@
             "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
           },
           "count": 1,
-          "Size": "Standard_A1",
+          "Size": "Standard_A2m_v2",
           "VN_subnet_name": "PRIVATE",
-          "ipconfiguration": "Dynamic",
+          "ipconfiguration": "Static",
           "privateIPAddress": "",
           "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "docker.sh",
+          "customScript_name": "ubuntu_installdocker.sh",
           "adminUsername": "depadmin",
           "publicKeys": [
             {
@@ -91,10 +91,10 @@
           "publicIPAllocationMethod": "Static",
           "VN_subnet_name": "PRIVATE",
           "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "docker.sh",
+          "customScript_name": "ubuntu_installdocker.sh",
           "instanceCount": 2,
           "vm": {
-            "vmSize": "Standard_A1",
+            "vmSize": "Standard_A2m_v2",
             "adminUsername": "depadmin",
             "publicKeys": [
               {

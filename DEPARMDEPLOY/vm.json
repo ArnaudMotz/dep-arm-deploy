@@ -23,8 +23,8 @@
     "vm_nic_name": "[concat(variables('vm_fullname'),'-INT')]",
     "vm_nic_ID": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_nic_name'))]",
     "ipconfigurationStatic": {
-      "privateIPAddress": "[variables('vm').privateIPAddress]",
       "privateIPAllocationMethod": "Static",
+      "privateIPAddress": "[variables('VM').privateIPAddress]",
       "subnet": {
         "id": "[variables('VN_subnet_ID')]"
       }

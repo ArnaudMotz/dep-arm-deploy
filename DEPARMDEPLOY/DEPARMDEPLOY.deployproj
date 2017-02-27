@@ -33,7 +33,7 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
-    <None Include="customScript\docker.sh" />
+    <None Include="customScript\ubuntu_installdocker.sh" />
     <Content Include="scaleset.json" />
     <Content Include="scaleset.parameters.json" />
     <Content Include="vm.json" />

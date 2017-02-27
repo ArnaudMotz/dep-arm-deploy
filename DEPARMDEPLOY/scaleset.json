@@ -28,7 +28,7 @@
     "publicIPdomainNameLabel": "[toLower(concat(resourceGroup().name, '-', variables('scaleSet_name')))]",
     "LB_pub_IP_name": "[concat(variables('scaleSet_fullname'),'-PUBIP')]",
     "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
-    "LB_name": "[concat(variables('scaleSet_fullname'), '-LB-PUB')]",
+    "LB_name": "[concat(variables('scaleSet_fullname'), '-LB-INT')]",
     "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_name'))]",
     "LB_frontEndIPConfig_name": "LoadBalancerFrontEnd",
     "LB_frontEndIPConfig_ID": "[concat(variables('LB_ID'),'/frontendIPConfigurations/',variables('LB_frontEndIPConfig_name'))]",
@@ -70,8 +70,9 @@
           {
             "name": "[variables('LB_frontEndIPConfig_name')]",
             "properties": {
-              "publicIPAddress": {
-                "id": "[variables('LB_pub_IP_ID')]"
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('VN_subnet_ID')]"
               }
             }
           }
