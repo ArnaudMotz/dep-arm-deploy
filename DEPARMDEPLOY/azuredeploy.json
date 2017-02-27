@@ -3,10 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "scalesets": {
-      "type": "object"
+      "type": "array"
     },
     "VMs": {
-      "type": "object"
+      "type": "array"
     }
 
   },
