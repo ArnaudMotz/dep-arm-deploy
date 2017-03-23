@@ -67,7 +67,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('VN_ID')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -87,7 +86,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('VN_ID')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -110,7 +108,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[variables('VN_ID')]"
       ],
       "properties": {
         "mode": "Incremental",

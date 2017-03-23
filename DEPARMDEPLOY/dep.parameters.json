@@ -28,6 +28,10 @@
             "offer": "SLES",
             "sku": "12-SP2",
             "version": "latest"
+          },
+          "datadisk": {
+            "enable": "Yes",
+            "sizeGB": "100"
           }
         },
         {
@@ -54,6 +58,10 @@
             "offer": "SLES",
             "sku": "12-SP2",
             "version": "latest"
+          },
+          "datadisk": {
+            "enable": "Yes",
+            "sizeGB": "100"
           }
         }
       ]
