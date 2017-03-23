@@ -30,7 +30,7 @@
     "LB_backendAddressPool_ID": "[concat(variables('LB_ID'),'/backendAddressPools/',variables('LB_backendAddressPool'))]",
     "customScript_URL": "[parameters('scaleset').customScript_URL]",
     "customScript_name": "[parameters('scaleset').customScript_name]",
-    "datadiskSize": "[parameters('scaleset').datadisk.sizeGB]",
+    "datadiskSize": "[parameters('scaleset').vm.datadisk.sizeGB]",
     "datadiskDef": {
       "diskSizeGB": "[variables('datadiskSize')]",
       "lun": 0,
