@@ -31,7 +31,7 @@
       "comments": "",
       "apiVersion": "[variables('networkApiVersion')]",
       "type": "Microsoft.Network/loadBalancers",
-      "name": "[variables('LB_name')]",
+      "name": "[variables('LB_fullname')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
       ],
