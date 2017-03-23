@@ -40,7 +40,7 @@
     "datadiskYes": [
       "[variables('datadiskDef')]"
     ],
-    "datadisk": "[variables(concat('datadisk', parameters('scaleset').datadisk.enable))]",
+    "datadisk": "[variables(concat('datadisk', parameters('scaleset').vm.datadisk.enable))]",
     "computeApiVersion": "2016-04-30-preview",
     "networkApiVersion": "2016-09-01",
     "storageApiVersion": "2015-06-15"
