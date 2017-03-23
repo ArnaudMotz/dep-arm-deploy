@@ -53,7 +53,6 @@
       "name": "[variables('scaleSet_fullname')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[variables('LB_ID')]"
       ],
       "sku": {
         "name": "[variables('vm_vmSize')]",
