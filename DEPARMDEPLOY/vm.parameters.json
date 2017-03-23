@@ -35,6 +35,9 @@
         "customScript_name": "nothing.sh"
       }
     },
-    "VN_name": {"value": "DEPARMDEPLOY-VN"}
+
+    "VN_name": {
+      "value": "DEPARMDEPLOY-VN"
+    }
   }
 }

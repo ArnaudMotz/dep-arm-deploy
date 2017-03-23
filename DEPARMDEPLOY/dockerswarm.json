@@ -4,6 +4,9 @@
   "parameters": {
     "dockerswarm": {
       "type": "object"
+    },
+    "VN_name": {
+      "type": "string"
     }
   },
   "variables": {
@@ -14,7 +17,7 @@
     "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
 
     "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-    "VN_name": "[concat(resourceGroup().name,'-VN')]",
+    "VN_name": "[parameters('dockerswarm').VN_name]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[parameters('dockerswarm').VN_subnet_name]",
     "NSG_name": "[concat(resourceGroup().name,'-NSG')]",

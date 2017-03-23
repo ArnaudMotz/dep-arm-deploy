@@ -15,6 +15,7 @@
   "variables": {
     "template_dockerswarm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/dockerswarm.json",
     "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
+    "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
     "VN_name": "[concat(resourceGroup().name,'-VN')]",
     "VN_ID": "[resourceId('Microsoft.Network/virtualNetworks', variables('VN_name'))]",
     "VN_subnet_DMZ_name": "DMZ",
@@ -118,7 +119,7 @@
       }
     },
     {
-      "name": "[concat('scaleset','-',parameters('scalesets')[copyIndex()].name)]",
+      "name": "[concat('scaleset','-',parameters('scalesets')[copyIndex()].name,copyIndex())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('ResourceApiVersion')]",
       "dependsOn": [
@@ -162,7 +163,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "VM": {
+          "VMs": {
             "value": "[parameters('VMs')[copyIndex()]]"
           },
           "VN_name": {

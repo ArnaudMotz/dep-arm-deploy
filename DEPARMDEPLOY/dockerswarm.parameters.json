@@ -20,6 +20,9 @@
           }
         ]
       }
+    },
+    "VN_name": {
+      "value": "DEPARMDEPLOY-VN"
     }
   }
 }
