@@ -32,9 +32,7 @@
       "name": "[parameters('scaleset').name]",
       "VN_subnet_name": "[variables('VN_subnet_name')]"
     },
-    "LB_ID": "[reference('loadbalancer').outputs.id]",
     "LB_backendAddressPool": "LoadBalancerBackend",
-    "LB_backendAddressPool_ID": "[concat(variables('LB_ID'),'/backendAddressPools/',variables('LB_backendAddressPool'))]",
     "customScript_URL": "[parameters('scaleset').customScript_URL]",
     "customScript_name": "[parameters('scaleset').customScript_name]",
     "datadiskSize": "[parameters('scaleset').vm.datadisk.sizeGB]",
@@ -68,6 +66,9 @@
         "parameters": {
           "loadbalancer": {
             "value": "[variables('loadbalancer')]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
           }
         }
       }
@@ -124,7 +125,7 @@
                         },
                         "loadBalancerBackendAddressPools": [
                           {
-                            "id": "[variables('LB_backendAddressPool_ID')]"
+                            "id": "[concat(reference('loadbalancer').outputs.id,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
                           }
                         ]
                       }

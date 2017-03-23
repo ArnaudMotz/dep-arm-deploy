@@ -4,6 +4,9 @@
   "parameters": {
     "loadbalancer": {
       "type": "object"
+    },
+    "VN_name": {
+      "type": "string"
     }
   },
   "variables": {
