@@ -10,9 +10,6 @@
     }
   },
   "variables": {
-    "template_loadbalancerDMZ": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_pub.json",
-    "template_loadbalancerPRIVATE": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_priv.json",
-    "template_loadbalancer": "[variables(concat('template_loadbalancer', variables('VN_subnet_name')))]",
     "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
     "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
 
@@ -21,10 +18,7 @@
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[parameters('dockerswarm').VN_subnet_name]",
     "NSG_name": "[concat(resourceGroup().name,'-NSG')]",
-    "loadbalancer": {
-      "name": "[parameters('dockerswarm').name]",
-      "VN_subnet_name": "[variables('VN_subnet_name')]"
-    },
+
     "imageReference": {
       "publisher": "Canonical",
       "offer": "UbuntuServer",
@@ -63,30 +57,10 @@
   },
   "resources": [
     {
-      "name": "loadbalancer",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('template_loadbalancer')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "loadbalancer": {
-            "value": "[variables('loadbalancer')]"
-          }
-        }
-      }
-    },
-    {
       "name": "scaleset",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "loadbalancer"
       ],
       "properties": {
         "mode": "Incremental",

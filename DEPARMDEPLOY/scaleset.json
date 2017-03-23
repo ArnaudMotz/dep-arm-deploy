@@ -10,6 +10,10 @@
     }
   },
   "variables": {
+    "template_loadbalancerDMZ": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_pub.json",
+    "template_loadbalancerPRIVATE": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_priv.json",
+    "template_loadbalancer": "[variables(concat('template_loadbalancer', variables('VN_subnet_name')))]",
+
     "VN_name": "[parameters('VN_name')]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[parameters('scaleset').VN_subnet_name]",
@@ -24,8 +28,11 @@
     "vm_publicKeys": "[parameters('scaleset').vm.publicKeys]",
     "vm_nic_name": "[concat(variables('scaleSet_fullname'), '-NIC')]",
     "vm_ipconfig_name": "ipconfig",
-    "LB_name": "[concat(variables('scaleSet_fullname'), '-LB-INT')]",
-    "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_name'))]",
+    "loadbalancer": {
+      "name": "[parameters('scaleset').name]",
+      "VN_subnet_name": "[variables('VN_subnet_name')]"
+    },
+    "LB_ID": "[reference('loadbalancer').outputs.id]",
     "LB_backendAddressPool": "LoadBalancerBackend",
     "LB_backendAddressPool_ID": "[concat(variables('LB_ID'),'/backendAddressPools/',variables('LB_backendAddressPool'))]",
     "customScript_URL": "[parameters('scaleset').customScript_URL]",
@@ -47,12 +54,32 @@
   },
   "resources": [
     {
+      "name": "loadbalancer",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_loadbalancer')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "loadbalancer": {
+            "value": "[variables('loadbalancer')]"
+          }
+        }
+      }
+    },
+    {
       "comments": "",
       "apiVersion": "[variables('computeApiVersion')]",
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "name": "[variables('scaleSet_fullname')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "loadbalancer"
       ],
       "sku": {
         "name": "[variables('vm_vmSize')]",

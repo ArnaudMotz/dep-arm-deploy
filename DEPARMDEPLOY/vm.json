@@ -85,7 +85,6 @@
       "name": "[concat(variables('vm_fullname'),copyIndex(1))]",
       "apiVersion": "[variables('computeApiVersion')]",
       "location": "[resourceGroup().location]",
-      "tags": "[variables('vm').tags]",
       "dependsOn": [
         "niccopy",
         "[variables('avail_ID')]"

@@ -54,8 +54,8 @@
   ],
 
   "outputs": {
-    "loadbalancer": {
-      "value": "[reference(variables('LB_name'))]",
+    "id": {
+      "value": "[reference(variables('LB_ID'))]",
       "type": "object"
     }
   }
