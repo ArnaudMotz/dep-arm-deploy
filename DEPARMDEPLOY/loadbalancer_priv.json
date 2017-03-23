@@ -40,7 +40,10 @@
           {
             "name": "[variables('LB_frontEndIPConfig_name')]",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic"
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('VN_subnet_ID')]"
+              }
             }
           }
         ],
