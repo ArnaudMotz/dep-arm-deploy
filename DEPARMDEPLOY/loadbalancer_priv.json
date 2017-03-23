@@ -15,7 +15,7 @@
     "VN_subnet_name": "[parameters('loadbalancer').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
     "LB_shortname": "[parameters('loadbalancer').name]",
-    "LB_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('LB_name'))]",
+    "LB_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('LB_shortname'))]",
     "LB_fullname": "[concat(variables('LB_name'), '-LBINT')]",
     "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_fullname'))]",
     "LB_frontEndIPConfig_name": "LoadBalancerFrontEnd",

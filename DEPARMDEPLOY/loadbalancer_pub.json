@@ -17,7 +17,7 @@
     "LB_shortname": "[parameters('loadbalancer').name]",
     "publicIPAllocationMethod": "Static",
     "publicIPdomainNameLabel": "[toLower(concat(resourceGroup().name, '-', variables('LB_shortname')))]",
-    "LB_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('LB_name'))]",
+    "LB_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('LB_shortname'))]",
     "LB_pub_IP_name": "[concat(variables('LB_name'),'-PUBIP')]",
     "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
     "LB_fullname": "[concat(variables('LB_name'), '-LBPUB')]",
