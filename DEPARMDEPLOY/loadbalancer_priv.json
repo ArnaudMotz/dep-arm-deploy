@@ -1,0 +1,62 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "loadbalancer": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "VN_name": "[parameters('loadbalancer').VN_name]",
+    "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
+    "VN_subnet_name": "[parameters('loadbalancer').VN_subnet_name]",
+    "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
+    "LB_shortname": "[parameters('loadbalancer').name]",
+    "LB_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('LB_name'))]",
+    "LB_fullname": "[concat(variables('LB_name'), '-LBINT')]",
+    "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_fullname'))]",
+    "LB_frontEndIPConfig_name": "LoadBalancerFrontEnd",
+    "LB_frontEndIPConfig_ID": "[concat(variables('LB_ID'),'/frontendIPConfigurations/',variables('LB_frontEndIPConfig_name'))]",
+    "LB_backendAddressPool": "LoadBalancerBackend",
+    "LB_backendAddressPool_ID": "[concat(variables('LB_ID'),'/backendAddressPools/',variables('LB_backendAddressPool'))]",
+    "computeApiVersion": "2016-04-30-preview",
+    "networkApiVersion": "2016-09-01",
+    "storageApiVersion": "2015-06-15"
+  },
+  "resources": [
+    {
+      "comments": "",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('LB_name')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('LB_frontEndIPConfig_name')]",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('LB_backendAddressPool')]"
+          }
+        ],
+        "loadBalancingRules": [],
+        "probes": []
+      },
+      "resources": []
+    }
+  ],
+
+  "outputs": {
+    "loadbalancer": {
+      "value": "[reference(variables('LB_name'))]",
+      "type": "object"
+    }
+  }
+}

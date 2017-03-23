@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "VM": {
+    "VMs": {
       "type": "object"
     },
     "VN_name": {
@@ -10,21 +10,17 @@
     }
   },
   "variables": {
-    "vm": "[parameters('VM')]",
+    "vm": "[parameters('VMs')]",
     "VN_name": "[parameters('VN_name')]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[variables('vm').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
     "vm_fullname": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('vm').name)]",
-    "vm_ID": "[resourceId('Microsoft.Compute/virtualMachines',variables('vm_fullname'))]",
-    "vm_disk_name": "[concat(variables('vm_fullname'),'-OS')]",
     "avail_name": "[concat(variables('vm_fullname'), '-AV')]",
     "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
-    "vm_nic_name": "[concat(variables('vm_fullname'),'-INT')]",
-    "vm_nic_ID": "[resourceId('Microsoft.Network/networkInterfaces', variables('vm_nic_name'))]",
     "ipconfigurationStatic": {
       "privateIPAllocationMethod": "Static",
-      "privateIPAddress": "[variables('VM').privateIPAddress]",
+      "privateIPAddress": "[variables('vm').privateIPAddress]",
       "subnet": {
         "id": "[variables('VN_subnet_ID')]"
       }
@@ -35,6 +31,17 @@
         "id": "[variables('VN_subnet_ID')]"
       }
     },
+    "datadiskSize": "[variables('vm').datadisk.sizeGB]",
+    "datadiskDef": {
+      "diskSizeGB": "[variables('datadiskSize')]",
+      "lun": 0,
+      "createOption": "Empty"
+    },
+    "datadiskNo": [],
+    "datadiskYes": [
+      "[variables('datadiskDef')]"
+    ],
+    "datadisk": "[variables(concat('datadisk', variables('vm').datadisk.enable))]",
     "ipconfiguration": "[variables(concat('ipconfiguration',variables('vm').ipconfiguration))]",
     "computeApiVersion": "2016-04-30-preview",
     "networkApiVersion": "2016-09-01"
@@ -55,7 +62,7 @@
     {
       "apiVersion": "[variables('networkApiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('vm_nic_name'),copyIndex(1))]",
+      "name": "[concat(variables('vm_fullname'),copyIndex(1),'-NIC')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
       ],
@@ -97,11 +104,12 @@
         "storageProfile": {
           "imageReference": "[variables('vm').imageReference]",
           "osDisk": {
-            "name": "[concat(variables('vm_disk_name'),copyIndex(1))]",
+            "name": "[concat(variables('vm_fullname'),copyIndex(1),'-OS')]",
             "createOption": "FromImage",
             "osType": "Linux",
             "caching": "ReadWrite"
-          }
+          },
+          "dataDisks": "[variables('datadisk')]"
         },
         "osProfile": {
           "computerName": "[concat(variables('vm_fullname'),copyIndex(1))]",
@@ -116,7 +124,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('vm_nic_name'), copyindex(1)))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vm_fullname'),copyIndex(1),'-NIC'))]"
             }
           ]
         }

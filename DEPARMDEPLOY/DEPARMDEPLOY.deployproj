@@ -25,6 +25,8 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
+    <Content Include="dockerswarm.parameters.json" />
+    <Content Include="dockerswarm.json" />
     <Content Include="azuredeploy.json" />
     <Content Include="dep.parameters.json" />
     <Content Include="corebanking.parameters.json" />
@@ -34,6 +36,10 @@
     </None>
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <None Include="customScript\ubuntu_installdocker.sh" />
+    <Content Include="loadbalancer_priv.json" />
+    <Content Include="loadbalancer_priv.parameters.json" />
+    <Content Include="loadbalancer_pub.json" />
+    <Content Include="loadbalancer_pub.parameters.json" />
     <Content Include="scaleset.json" />
     <Content Include="scaleset.parameters.json" />
     <Content Include="vm.json" />

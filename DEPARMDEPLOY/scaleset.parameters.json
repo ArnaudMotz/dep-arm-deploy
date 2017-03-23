@@ -6,13 +6,12 @@
     "scaleset": {
       "value": {
         "name": "PROXY",
-        "publicIPAllocationMethod": "Static",
         "VN_subnet_name": "DMZ",
         "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
         "customScript_name": "nothing.sh",
         "instanceCount": 2,
         "vm": {
-          "vmSize": "Standard_A1",
+          "size": "Standard_A1",
           "adminUsername": "depadmin",
           "publicKeys": [
             {
@@ -25,6 +24,10 @@
             "offer": "UbuntuServer",
             "sku": "16.04-LTS",
             "version": "latest"
+          },
+          "datadisk": {
+            "enable": "Yes",
+            "sizeGB": "100"
           }
         }
       }

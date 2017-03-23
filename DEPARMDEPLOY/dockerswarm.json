@@ -1,0 +1,129 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dockerswarm": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "template_loadbalancerDMZ": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_pub.json",
+    "template_loadbalancerPRIVATE": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_priv.json",
+    "template_loadbalancer": "[variables(concat('template_loadbalancer', variables('VN_subnet_name')))]",
+    "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
+    "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
+
+    "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+    "VN_name": "[concat(resourceGroup().name,'-VN')]",
+    "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
+    "VN_subnet_name": "[parameters('dockerswarm').VN_subnet_name]",
+    "NSG_name": "[concat(resourceGroup().name,'-NSG')]",
+    "loadbalancer": {
+      "name": "[parameters('dockerswarm').name]",
+      "VN_subnet_name": "[variables('VN_subnet_name')]"
+    },
+    "imageReference": {
+      "publisher": "Canonical",
+      "offer": "UbuntuServer",
+      "sku": "16.04-LTS",
+      "version": "latest"
+    },
+    "scaleset": {
+      "name": "[parameters('dockerswarm').name]",
+      "VN_subnet_name": "[variables('VN_subnet_name')]",
+      "customScript_URL": "[variables('customScript_URL')]",
+      "customScript_name": "ubuntu_installdocker.sh",
+      "instanceCount": "[parameters('dockerswarm').node_count]",
+      "vm": {
+        "size": "[parameters('dockerswarm').size]",
+        "adminUsername": "depadmin",
+        "publicKeys": "[parameters('dockerswarm').publicKeys]",
+        "imageReference": "[variables('imageReference')]",
+        "datadisk": "[parameters('dockerswarm').datadisk]"
+      }
+    },
+    "masters": {
+      "count": "[parameters('dockerswarm').master_count]",
+      "name": "[concat(parameters('dockerswarm').name, 'MASTER')]",
+      "size": "[parameters('dockerswarm').size]",
+      "adminUsername": "depadmin",
+      "publicKeys": "[parameters('dockerswarm').publicKeys]",
+      "imageReference": "[variables('imageReference')]",
+      "datadisk": "[parameters('dockerswarm').datadisk]",
+      "VN_subnet_name": "[variables('VN_subnet_name')]",
+      "ipconfiguration": "Dynamic",
+      "privateIPAddress": "",
+      "customScript_URL": "[variables('customScript_URL')]",
+      "customScript_name": "ubuntu_installdocker.sh"
+    },
+    "networkApiVersion": "2016-09-01"
+  },
+  "resources": [
+    {
+      "name": "loadbalancer",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_loadbalancer')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "loadbalancer": {
+            "value": "[variables('loadbalancer')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "scaleset",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_scaleset')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "scaleset": {
+            "value": "[variables('scaleset')]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[concat('VMs','-',variables('masters').name)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_vm')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMs": {
+            "value": "[variables('masters')]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
+          }
+        }
+      }
+    }
+  ]
+}

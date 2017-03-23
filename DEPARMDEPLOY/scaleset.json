@@ -18,131 +18,34 @@
     "scaleSet_fullname": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('scaleSet_name'))]",
     "scaleSet_instanceCount": "[parameters('scaleset').instanceCount]",
     "vm_name": "[variables('scaleSet_fullname')]",
-    "vm_vmSize": "[parameters('scaleset').vm.vmSize]",
+    "vm_vmSize": "[parameters('scaleset').vm.size]",
     "vm_imageReference": "[parameters('scaleset').vm.imageReference]",
     "vm_adminUsername": "[parameters('scaleset').vm.adminUsername]",
     "vm_publicKeys": "[parameters('scaleset').vm.publicKeys]",
     "vm_nic_name": "[concat(variables('scaleSet_fullname'), '-NIC')]",
     "vm_ipconfig_name": "ipconfig",
-    "publicIPAllocationMethod": "[parameters('scaleset').publicIPAllocationMethod]",
-    "publicIPdomainNameLabel": "[toLower(concat(resourceGroup().name, '-', variables('scaleSet_name')))]",
-    "LB_pub_IP_name": "[concat(variables('scaleSet_fullname'),'-PUBIP')]",
-    "LB_pub_IP_ID": "[resourceId('Microsoft.Network/publicIPAddresses', variables('LB_pub_IP_name'))]",
     "LB_name": "[concat(variables('scaleSet_fullname'), '-LB-INT')]",
     "LB_ID": "[resourceId('Microsoft.Network/loadBalancers',variables('LB_name'))]",
-    "LB_frontEndIPConfig_name": "LoadBalancerFrontEnd",
-    "LB_frontEndIPConfig_ID": "[concat(variables('LB_ID'),'/frontendIPConfigurations/',variables('LB_frontEndIPConfig_name'))]",
     "LB_backendAddressPool": "LoadBalancerBackend",
     "LB_backendAddressPool_ID": "[concat(variables('LB_ID'),'/backendAddressPools/',variables('LB_backendAddressPool'))]",
-    "LB_probe_http": "HTTP",
-    "LB_probe_http_ID": "[concat(variables('LB_ID'),'/probes/',variables('LB_probe_http'))]",
-    "LB_probe_https": "HTTPS",
-    "LB_probe_https_ID": "[concat(variables('LB_ID'),'/probes/',variables('LB_probe_https'))]",
     "customScript_URL": "[parameters('scaleset').customScript_URL]",
     "customScript_name": "[parameters('scaleset').customScript_name]",
+    "datadiskSize": "[parameters('scaleset').datadisk.sizeGB]",
+    "datadiskDef": {
+      "diskSizeGB": "[variables('datadiskSize')]",
+      "lun": 0,
+      "createOption": "Empty"
+    },
+    "datadiskNo": [],
+    "datadiskYes": [
+      "[variables('datadiskDef')]"
+    ],
+    "datadisk": "[variables(concat('datadisk', parameters('scaleset').datadisk.enable))]",
     "computeApiVersion": "2016-04-30-preview",
     "networkApiVersion": "2016-09-01",
     "storageApiVersion": "2015-06-15"
   },
   "resources": [
-    {
-      "comments": "",
-      "apiVersion": "[variables('networkApiVersion')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('LB_pub_IP_name')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAllocationMethod')]"
-
-      }
-    },
-    {
-      "comments": "",
-      "apiVersion": "[variables('networkApiVersion')]",
-      "type": "Microsoft.Network/loadBalancers",
-      "name": "[variables('LB_name')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[variables('LB_pub_IP_ID')]"
-      ],
-      "properties": {
-        "frontendIPConfigurations": [
-          {
-            "name": "[variables('LB_frontEndIPConfig_name')]",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[variables('VN_subnet_ID')]"
-              }
-            }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "[variables('LB_backendAddressPool')]"
-          }
-        ],
-        "loadBalancingRules": [
-          {
-            "name": "HTTP",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[variables('LB_frontEndIPConfig_ID')]"
-              },
-              "backendAddressPool": {
-                "id": "[variables('LB_backendAddressPool_ID')]"
-              },
-              "probe": {
-                "id": "[variables('LB_probe_http_ID')]"
-              },
-              "protocol": "Tcp",
-              "frontendPort": 80,
-              "backendPort": 80,
-              "enableFloatingIP": false
-            }
-          },
-          {
-            "name": "HTTPS",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[variables('LB_frontEndIPConfig_ID')]"
-              },
-              "backendAddressPool": {
-                "id": "[variables('LB_backendAddressPool_ID')]"
-              },
-              "probe": {
-                "id": "[variables('LB_probe_https_ID')]"
-              },
-              "protocol": "Tcp",
-              "frontendPort": 443,
-              "backendPort": 443,
-              "enableFloatingIP": false
-            }
-          }
-        ],
-        "probes": [
-          {
-            "name": "[variables('LB_probe_http')]",
-            "properties": {
-              "protocol": "Tcp",
-              "port": 80,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
-            }
-          },
-          {
-            "name": "[variables('LB_probe_https')]",
-            "properties": {
-              "protocol": "Tcp",
-              "port": 443,
-              "intervalInSeconds": 5,
-              "numberOfProbes": 2
-            }
-          }
-        ]
-      },
-      "resources": []
-    },
     {
       "comments": "",
       "apiVersion": "[variables('computeApiVersion')]",
@@ -167,6 +70,7 @@
             "osDisk": {
               "createOption": "FromImage"
             },
+            "dataDisks": "[variables('datadisk')]",
             "imageReference": "[variables('vm_imageReference')]"
           },
           "osProfile": {

@@ -5,12 +5,15 @@
     "scalesets": {
       "type": "array"
     },
+    "dockerswarms": {
+      "type": "array"
+    },
     "VMs": {
       "type": "array"
     }
   },
   "variables": {
-    "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
+    "template_dockerswarm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/dockerswarm.json",
     "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
     "VN_name": "[concat(resourceGroup().name,'-VN')]",
     "VN_ID": "[resourceId('Microsoft.Network/virtualNetworks', variables('VN_name'))]",
@@ -18,7 +21,8 @@
     "VN_subnet_Private_name": "PRIVATE",
     "NSG_name": "[concat(resourceGroup().name,'-NSG')]",
     "NSG_ID": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('NSG_name'))]",
-    "networkApiVersion": "2016-09-01"
+    "networkApiVersion": "2016-09-01",
+    "ResourceApiVersion": "2015-01-01"
   },
   "resources": [
     {
@@ -87,9 +91,36 @@
       "resources": []
     },
     {
+      "name": "[concat('dockerswarm','-',parameters('dockerswarms')[copyIndex()].name,copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('ResourceApiVersion')]",
+      "dependsOn": [
+        "[variables('VN_ID')]"
+      ],
+      "copy": {
+        "name": "dockerswarmcopy",
+        "count": "[length(parameters('dockerswarms'))]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_dockerswarm')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "dockerswarm": {
+            "value": "[parameters('dockerswarms')[copyIndex()]]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
+          }
+        }
+      }
+    },
+    {
       "name": "[concat('scaleset','-',parameters('scalesets')[copyIndex()].name)]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
+      "apiVersion": "[variables('ResourceApiVersion')]",
       "dependsOn": [
         "[variables('VN_ID')]"
       ],
@@ -114,9 +145,9 @@
       }
     },
     {
-      "name": "[concat('vm','-',parameters('VMs')[copyIndex()].name)]",
+      "name": "[concat('vm','-',parameters('VMs')[copyIndex()].name, copyIndex())]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
+      "apiVersion": "[variables('ResourceApiVersion')]",
       "dependsOn": [
         "[variables('VN_ID')]"
       ],

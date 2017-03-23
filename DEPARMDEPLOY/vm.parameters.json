@@ -2,14 +2,14 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "VM": {
+    "VMs": {
       "value": {
         "name": "MASTER",
-        "count": 2,
+        "count": 1,
         "tags": {
           "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
         },
-        "Size": "Standard_A1",
+        "size": "Standard_A1",
         "adminUsername": "depadmin",
         "publicKeys": [
           {
@@ -22,6 +22,10 @@
           "offer": "UbuntuServer",
           "sku": "16.04-LTS",
           "version": "latest"
+        },
+        "datadisk": {
+          "enable": "Yes",
+          "sizeGB": "100"
         },
         "VN_name": "DEPARMDEPLOY-VN",
         "VN_subnet_name": "DMZ",
