@@ -11,7 +11,7 @@
   },
   "variables": {
     "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
-    "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
+    "template_availabilityset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/availabilityset.json",
 
     "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
     "VN_name": "[parameters('VN_name')]",
@@ -84,7 +84,7 @@
       }
     },
     {
-      "name": "[concat('VMs','-',variables('masters').name)]",
+      "name": "[concat('AVS','-',variables('masters').name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -92,7 +92,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('template_vm')]",
+          "uri": "[variables('template_availabilityset')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {

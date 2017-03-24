@@ -2,86 +2,67 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "VMs": {
+    "AVS": {
       "value": [
         {
-          "name": "REBOUND",
-          "tags": {
-            "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
+          "avs": {
+            "name": "REBOUND",
+            "instanceCount": 1
           },
-          "count": 1,
-          "Size": "Standard_A1",
-          "VN_subnet_name": "DMZ",
-          "ipconfiguration": "Static",
-          "privateIPAddress": "10.0.0.100",
-          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "nothing.sh",
-          "adminUsername": "depadmin",
-          "publicKeys": [
-            {
-              "path": "/home/depadmin/.ssh/authorized_keys",
-              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+          "vmdef": {
+            "Size": "Standard_A1",
+            "VN_subnet_name": "DMZ",
+            "ipconfiguration": "Static",
+            "privateIPAddress": "10.0.0.100",
+            "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+            "customScript_name": "nothing.sh",
+            "adminUsername": "depadmin",
+            "publicKeys": [
+              {
+                "path": "/home/depadmin/.ssh/authorized_keys",
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+              }
+            ],
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "16.04-LTS",
+              "version": "latest"
             }
-          ],
-          "imageReference": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "16.04-LTS",
-            "version": "latest"
           }
         },
         {
-          "name": "APIGW",
-          "tags": {
-            "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
+          "avs": {
+            "name": "APIGW",
+            "instanceCount": 1
           },
-          "count": 1,
-          "Size": "Standard_A2m_v2",
-          "VN_subnet_name": "DMZ",
-          "ipconfiguration": "Dynamic",
-          "privateIPAddress": "",
-          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "nothing.sh",
-          "adminUsername": "depadmin",
-          "publicKeys": [
-            {
-              "path": "/home/depadmin/.ssh/authorized_keys",
-              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+          "vmdef": {
+            "tags": {
+              "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
+            },
+            "Size": "Standard_A2m_v2",
+            "VN_subnet_name": "DMZ",
+            "ipconfiguration": "Dynamic",
+            "privateIPAddress": "",
+            "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
+            "customScript_name": "nothing.sh",
+            "adminUsername": "depadmin",
+            "publicKeys": [
+              {
+                "path": "/home/depadmin/.ssh/authorized_keys",
+                "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
+              }
+            ],
+            "imageReference": {
+              "publisher": "SUSE",
+              "offer": "SLES",
+              "sku": "12-SP2",
+              "version": "latest"
             }
-          ],
-          "imageReference": {
-            "publisher": "SUSE",
-            "offer": "SLES",
-            "sku": "12-SP2",
-            "version": "latest"
+
           }
+
         },
-        {
-          "name": "CORE-MASTER",
-          "tags": {
-            "AutoShutdownSchedule": "20:00 -> 07:00, Saturday, Sunday"
-          },
-          "count": 1,
-          "Size": "Standard_A2m_v2",
-          "VN_subnet_name": "PRIVATE",
-          "ipconfiguration": "Static",
-          "privateIPAddress": "10.0.1.100",
-          "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
-          "customScript_name": "ubuntu_installdocker.sh",
-          "adminUsername": "depadmin",
-          "publicKeys": [
-            {
-              "path": "/home/depadmin/.ssh/authorized_keys",
-              "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAn1It4gHPw0NTlOjNnUN83Cf4WsYvaAMNFZh/WGGw/LcAub+ejWTg9rLRL2OvX0RREwAhAP2hQY0MLcJ1DxYMU7QclsmDuZSijmge7LR0pDbs4M/iQx65SlHHHYrlgwo1ruBvkcV59g3PGThJyv0ZtpMyN7j9CMwIPF0ukYmKO4GLncMHuuok0WhNybudlxCgFVsgHpqgfYgjOWMLqhMyDuAgqDImiEY0UulinJbBxLm4MpT897PvZ7KbHD5OL11n6wP2eeMO3D3ay1qc1maLedTWek9zda6MQuzjIbxlZ+98elGIxibpl9XvrdSJvw2FjRqzq8W83Q1XnUZ34GPSmw=="
-            }
-          ],
-          "imageReference": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "16.04-LTS",
-            "version": "latest"
-          }
-        }
       ]
     },
     "scalesets": {

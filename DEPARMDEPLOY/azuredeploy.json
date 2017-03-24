@@ -8,14 +8,15 @@
     "dockerswarms": {
       "type": "array"
     },
-    "VMs": {
+    "AVS": {
       "type": "array"
     }
   },
   "variables": {
     "template_dockerswarm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/dockerswarm.json",
-    "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
+    "template_availabilityset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/availabilityset.json",
     "template_scaleset": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/scaleset.json",
+
     "VN_name": "[concat(resourceGroup().name,'-VN')]",
     "VN_ID": "[resourceId('Microsoft.Network/virtualNetworks', variables('VN_name'))]",
     "VN_subnet_DMZ_name": "DMZ",
@@ -146,25 +147,28 @@
       }
     },
     {
-      "name": "[concat('vm','-',parameters('VMs')[copyIndex()].name, copyIndex())]",
+      "name": "[concat('AVS','-',parameters('AVS')[copyIndex()].name, copyIndex())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('ResourceApiVersion')]",
       "dependsOn": [
         "[variables('VN_ID')]"
       ],
       "copy": {
-        "name": "VMscopy",
-        "count": "[length(parameters('VMs'))]"
+        "name": "AVScopy",
+        "count": "[length(parameters('AVS'))]"
       },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('template_vm')]",
+          "uri": "[variables('template_availabilityset')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "VMs": {
-            "value": "[parameters('VMs')[copyIndex()]]"
+          "AVS": {
+            "value": "[parameters('AVS')[copyIndex()].avs]"
+          }
+          "VMDEF": {
+            "value": "[parameters('AVS')[copyIndex()].vmdef]"
           },
           "VN_name": {
             "value": "[variables('VN_name')]"
