@@ -84,7 +84,7 @@
       }
     },
     {
-      "name": "[concat('AVS','-',variables('masters').name)]",
+      "name": "[concat('AVS','-',variables('masters').avs.name)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [

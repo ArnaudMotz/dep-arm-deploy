@@ -147,7 +147,7 @@
       }
     },
     {
-      "name": "[concat('AVS','-',parameters('AVS')[copyIndex()].name, copyIndex())]",
+      "name": "[concat('AVS','-',parameters('AVS')[copyIndex()].avs.name, copyIndex())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('ResourceApiVersion')]",
       "dependsOn": [
@@ -166,7 +166,7 @@
         "parameters": {
           "AVS": {
             "value": "[parameters('AVS')[copyIndex()].avs]"
-          }
+          },
           "VMDEF": {
             "value": "[parameters('AVS')[copyIndex()].vmdef]"
           },
