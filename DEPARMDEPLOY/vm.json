@@ -33,6 +33,7 @@
     },
     "datadiskSize": "[variables('vm').datadisk.sizeGB]",
     "datadiskDef": {
+      "name": "-DATA",
       "diskSizeGB": "[variables('datadiskSize')]",
       "lun": 0,
       "createOption": "Empty",

@@ -69,7 +69,7 @@
     "dockerswarms": {
       "value": [
         {
-          "name": "DOCKER",
+          "name": "SWARM1",
           "Size": "Standard_A2m_v2",
           "node_count": 2,
           "master_count": 1,
@@ -86,7 +86,7 @@
           }
         },
         {
-          "name": "DOCKER",
+          "name": "SWARM2",
           "Size": "Standard_A2m_v2",
           "node_count": 2,
           "master_count": 1,

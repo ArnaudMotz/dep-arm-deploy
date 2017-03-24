@@ -39,7 +39,8 @@
     "datadiskDef": {
       "diskSizeGB": "[variables('datadiskSize')]",
       "lun": 0,
-      "createOption": "Empty"
+      "createOption": "Empty",
+      "caching": "ReadWrite"
     },
     "datadiskNo": [],
     "datadiskYes": [
