@@ -126,7 +126,7 @@
                         },
                         "loadBalancerBackendAddressPools": [
                           {
-                            "id": "[concat(reference('loadbalancer').outputs.id.value,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
+                            "id": "[concat(reference(concat(variables('scaleSet_fullname'),'LB')).outputs.id.value,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
                           }
                         ]
                       }
