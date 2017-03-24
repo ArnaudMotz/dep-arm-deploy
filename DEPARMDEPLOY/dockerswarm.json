@@ -41,7 +41,7 @@
     },
     "masters": {
       "avs": {
-        "name": "[concat(parameters('dockerswarm').name, 'MASTER')]",
+        "name": "[concat(parameters('dockerswarm').name, '-', 'MASTER')]",
         "instanceCount": "[parameters('dockerswarm').master_count]"
       },
       "vmdef": {
