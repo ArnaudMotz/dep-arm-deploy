@@ -81,7 +81,7 @@
       "name": "[variables('scaleSet_fullname')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "loadbalancer"
+        "[concat(variables('scaleSet_fullname'),'LB')]"
       ],
       "sku": {
         "name": "[variables('vm_vmSize')]",
