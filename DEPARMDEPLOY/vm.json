@@ -93,7 +93,7 @@
         "storageProfile": {
           "imageReference": "[variables('vm').imageReference]",
           "osDisk": {
-            "name": "[concat(variables('vm_fullname'),copyIndex(1),'-OS')]",
+            "name": "[concat(variables('vm_fullname'),'-OS')]",
             "createOption": "FromImage",
             "osType": "Linux",
             "caching": "ReadWrite"
@@ -101,7 +101,7 @@
           "dataDisks": "[variables('datadisk')]"
         },
         "osProfile": {
-          "computerName": "[concat(variables('vm_fullname'),copyIndex(1))]",
+          "computerName": "[variables('vm_fullname')]",
           "adminUsername": "[variables('vm').adminUserName]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": "true",
@@ -113,7 +113,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vm_fullname'),copyIndex(1),'-NIC'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vm_fullname'),'-NIC'))]"
             }
           ]
         }
