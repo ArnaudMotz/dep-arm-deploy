@@ -17,7 +17,7 @@
   },
   "variables": {
     "vm": "[parameters('VMDEF')]",
-    "vm_name": "[variables('vm').name]",
+    "vm_name": "[parameters('VM_name')]",
     "VN_name": "[parameters('VN_name')]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "avail_name": "[parameters('AVS_name')]",
