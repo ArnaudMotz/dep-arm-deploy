@@ -1,0 +1,75 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "AVS": {
+      "type": "object"
+    },
+    "VMDEF": {
+      "type": "object"
+    },
+    "VN_name": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
+    "avs": "[parameters('AVS')]",
+    "vmdef": "[parameters('VMDEF')]",
+    "VN_name": "[parameters('VN_name')]",
+    "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
+    "VN_subnet_name": "[parameters('VMDEF').VN_subnet_name]",
+    "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
+    "avail_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('AVS').name)]",
+    "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
+    "vm_count": "[variables('AVS').instanceCount]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('avail_name')]",
+      "apiVersion": "2016-04-30-preview",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "platformFaultDomainCount": "2",
+        "platformUpdateDomainCount": "5",
+        "managed": "true"
+      }
+    },
+    {
+      "name": "[variables('avail_name')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[variables('avail_name')]"
+      ],
+      "copy": {
+        "name": "vmcopy",
+        "count": "[variables('vm_count')]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_vm')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "VMDEF": {
+            "value": "[variables('vmdef')]"
+          },
+          "VM_name": {
+            "value": "[concat(variables('avail_name'),copyIndex(1))]"
+          },
+          "AVS_name": {
+            "value": "[variables('avail_name')]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

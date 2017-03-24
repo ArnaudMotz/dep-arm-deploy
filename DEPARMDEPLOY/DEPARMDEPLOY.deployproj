@@ -42,6 +42,8 @@
     <Content Include="loadbalancer_pub.parameters.json" />
     <Content Include="scaleset.json" />
     <Content Include="scaleset.parameters.json" />
+    <Content Include="availabilityset.json" />
+    <Content Include="availabilityset.parameters.json" />
     <Content Include="vm.json" />
     <Content Include="vm.parameters.json" />
   </ItemGroup>

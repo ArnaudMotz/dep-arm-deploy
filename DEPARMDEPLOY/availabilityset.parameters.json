@@ -2,6 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "AVS": {
+      "value": {
+        "name": "MASTER",
+        "instanceCount": 1
+      }
+    },
     "VMDEF": {
       "value": {
         "tags": {
@@ -25,20 +31,15 @@
           "enable": "Yes",
           "sizeGB": "100"
         },
-        "VN_name": "DEPARMDEPLOY-VN",
         "VN_subnet_name": "DMZ",
         "ipconfiguration": "Dynamic",
         "privateIPAddress": "",
         "customScript_URL": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/customScript/",
         "customScript_name": "nothing.sh"
       }
+      }
     },
-    "VM_name": {
-      "value": "MASTER"
-    },
-    "AVS_name": {
-      "value": "MASTER-AV"
-    },
+
     "VN_name": {
       "value": "DEPARMDEPLOY-VN"
     }

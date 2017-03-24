@@ -30,8 +30,8 @@
             "version": "latest"
           },
           "datadisk": {
-            "enable": "Yes",
-            "sizeGB": "100"
+            "enable": "No",
+            "sizeGB": "0"
           }
         },
         {
@@ -60,8 +60,8 @@
             "version": "latest"
           },
           "datadisk": {
-            "enable": "Yes",
-            "sizeGB": "100"
+            "enable": "No",
+            "sizeGB": "0"
           }
         }
       ]

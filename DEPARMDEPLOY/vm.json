@@ -2,22 +2,30 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "VMs": {
+    "VMDEF": {
       "type": "object"
+    },
+    "VM_name": {
+      "type": "string"
+    },
+    "AVS_name": {
+      "type": "string"
     },
     "VN_name": {
       "type": "string"
     }
   },
   "variables": {
-    "vm": "[parameters('VMs')]",
+    "vm": "[parameters('VMDEF')]",
+    "vm_name": "[variables('vm').name]",
     "VN_name": "[parameters('VN_name')]",
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
+    "avail_name": "[parameters('AVS_name')]",
+    "avail_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, 'Microsoft.Compute/availabilitySets', variables('avail_name'))]",
     "VN_subnet_name": "[variables('vm').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
-    "vm_fullname": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('vm').name)]",
-    "avail_name": "[concat(variables('vm_fullname'), '-AV')]",
-    "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
+    "vm_fullname": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('vm_name'))]",
+
     "ipconfigurationStatic": {
       "privateIPAllocationMethod": "Static",
       "privateIPAddress": "[variables('vm').privateIPAddress]",
@@ -33,7 +41,7 @@
     },
     "datadiskSize": "[variables('vm').datadisk.sizeGB]",
     "datadiskDef": {
-      "name": "DATA1",
+      "name": "[concat(variables('vm_fullname'),'-DATA1')]",
       "diskSizeGB": "[variables('datadiskSize')]",
       "lun": 0,
       "createOption": "Empty",
@@ -51,27 +59,12 @@
   },
   "resources": [
     {
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('avail_name')]",
-      "apiVersion": "2016-04-30-preview",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "platformFaultDomainCount": "2",
-        "platformUpdateDomainCount": "5",
-        "managed": "true"
-      }
-    },
-    {
       "apiVersion": "[variables('networkApiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('vm_fullname'),copyIndex(1),'-NIC')]",
+      "name": "[concat(variables('vm_fullname'),'-NIC')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
       ],
-      "copy": {
-        "name": "niccopy",
-        "count": "[variables('vm').count]"
-      },
       "properties": {
         "ipConfigurations": [
           {
@@ -84,17 +77,12 @@
     {
       "comments": "",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vm_fullname'),copyIndex(1))]",
+      "name": "[concat(variables('vm_fullname'))]",
       "apiVersion": "[variables('computeApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "niccopy",
-        "[variables('avail_ID')]"
+        "[concat(variables('vm_fullname'),'-NIC')]"
       ],
-      "copy": {
-        "name": "vmcopy",
-        "count": "[variables('vm').count]"
-      },
       "properties": {
         "availabilitySet": {
           "id": "[variables('avail_ID')]"

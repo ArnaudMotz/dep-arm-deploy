@@ -40,18 +40,23 @@
       }
     },
     "masters": {
-      "count": "[parameters('dockerswarm').master_count]",
-      "name": "[concat(parameters('dockerswarm').name, 'MASTER')]",
-      "size": "[parameters('dockerswarm').size]",
-      "adminUsername": "depadmin",
-      "publicKeys": "[parameters('dockerswarm').publicKeys]",
-      "imageReference": "[variables('imageReference')]",
-      "datadisk": "[parameters('dockerswarm').datadisk]",
-      "VN_subnet_name": "[variables('VN_subnet_name')]",
-      "ipconfiguration": "Dynamic",
-      "privateIPAddress": "",
-      "customScript_URL": "[variables('customScript_URL')]",
-      "customScript_name": "ubuntu_installdocker.sh"
+      "avs": {
+        "name": "[concat(parameters('dockerswarm').name, 'MASTER')]",
+        "instanceCount": "[parameters('dockerswarm').master_count]"
+      },
+      "vmdef": {
+        "size": "[parameters('dockerswarm').size]",
+        "adminUsername": "depadmin",
+        "publicKeys": "[parameters('dockerswarm').publicKeys]",
+        "imageReference": "[variables('imageReference')]",
+        "datadisk": "[parameters('dockerswarm').datadisk]",
+        "VN_subnet_name": "[variables('VN_subnet_name')]",
+        "ipconfiguration": "Dynamic",
+        "privateIPAddress": "",
+        "customScript_URL": "[variables('customScript_URL')]",
+        "customScript_name": "ubuntu_installdocker.sh"
+      }
+
     },
     "networkApiVersion": "2016-09-01"
   },
@@ -91,8 +96,11 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "VMs": {
-            "value": "[variables('masters')]"
+          "AVS": {
+            "value": "[variables('masters').avs]"
+          },
+          "VMDEF": {
+            "value": "[variables('masters').vmdef]"
           },
           "VN_name": {
             "value": "[variables('VN_name')]"
