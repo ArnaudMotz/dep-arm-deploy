@@ -123,16 +123,12 @@
     {
       "comments": "",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vm_fullname'),copyIndex(1),'/customscript')]",
+      "name": "[concat(variables('vm_fullname'),'/customscript')]",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
         "[variables('vm_fullname')]"
       ],
-      "copy": {
-        "name": "scriptcopy",
-        "count": "[variables('vm').count]"
-      },
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
         "type": "CustomScript",
