@@ -53,7 +53,7 @@
   },
   "resources": [
     {
-      "name": "[variables('scaleSet_fullname')]",
+      "name": "[concat(variables('scaleSet_fullname'),'LB']",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
