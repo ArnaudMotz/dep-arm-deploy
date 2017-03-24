@@ -20,7 +20,7 @@
     "VN_ID": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('VN_name'))]",
     "VN_subnet_name": "[parameters('VMDEF').VN_subnet_name]",
     "VN_subnet_ID": "[concat(variables('VN_ID'), '/subnets/', variables('VN_subnet_name'))]",
-    "avail_shortname": "variables('AVS').name",
+    "avail_shortname": "[variables('AVS').name]",
     "avail_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('avail_shortname'),'-AV')]",
     "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
     "vm_count": "[variables('AVS').instanceCount]"
