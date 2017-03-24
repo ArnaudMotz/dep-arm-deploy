@@ -77,7 +77,7 @@
     {
       "comments": "",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vm_fullname'))]",
+      "name": "[variables('vm_fullname')]",
       "apiVersion": "[variables('computeApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -127,7 +127,7 @@
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
-        "vmcopy"
+        "[variables('vm_fullname')]"
       ],
       "copy": {
         "name": "scriptcopy",
