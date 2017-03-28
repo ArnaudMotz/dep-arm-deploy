@@ -14,6 +14,10 @@
   },
   "variables": {
     "template_vm": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/vm.json",
+    "template_loadbalancerDMZ": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_pub.json",
+    "template_loadbalancerPRIVATE": "https://raw.githubusercontent.com/albinhubert/dep-arm-deploy/master/DEPARMDEPLOY/loadbalancer_priv.json",
+    "template_loadbalancer": "[variables(concat('template_loadbalancer', variables('VN_subnet_name')))]",
+
     "avs": "[parameters('AVS')]",
     "vmdef": "[parameters('VMDEF')]",
     "VN_name": "[parameters('VN_name')]",
@@ -23,7 +27,14 @@
     "avail_shortname": "[variables('AVS').name]",
     "avail_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('avail_shortname'),'-AV')]",
     "avail_ID": "[resourceId('Microsoft.Compute/availabilitySets',variables('avail_name'))]",
-    "vm_count": "[variables('AVS').instanceCount]"
+    "vm_count": "[variables('AVS').instanceCount]",
+
+    "loadbalancer": {
+      "name": "[variables('avail_shortname')]",
+      "full_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('avail_shortname'),'LB')]",
+      "VN_subnet_name": "[variables('VN_subnet_name')]"
+    },
+    "LB_backendAddressPool": "LoadBalancerBackend"
   },
   "resources": [
     {
@@ -35,6 +46,28 @@
         "platformFaultDomainCount": "2",
         "platformUpdateDomainCount": "5",
         "managed": "true"
+      }
+    },
+    {
+      "name": "[variables('loadbalancer').full_name]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('template_loadbalancer')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "loadbalancer": {
+            "value": "[variables('loadbalancer')]"
+          },
+          "VN_name": {
+            "value": "[variables('VN_name')]"
+          }
+        }
       }
     },
     {
@@ -66,8 +99,15 @@
           },
           "VN_name": {
             "value": "[variables('VN_name')]"
+          },
+          "loadBalancerBackendAddressPools": {
+            "value": 
+            [
+              {
+                "id": "[concat(reference(variables('loadbalancer').full_name).outputs.id.value,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
+              }
+            ]
           }
-        }
       }
     }
   ],

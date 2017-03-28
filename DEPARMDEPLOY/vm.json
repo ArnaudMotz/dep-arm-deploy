@@ -13,6 +13,9 @@
     },
     "VN_name": {
       "type": "string"
+    },
+    "loadBalancerBackendAddressPools": {
+      "type": "array"
     }
   },
   "variables": {
@@ -31,13 +34,15 @@
       "privateIPAddress": "[variables('vm').privateIPAddress]",
       "subnet": {
         "id": "[variables('VN_subnet_ID')]"
-      }
+      },
+      "loadBalancerBackendAddressPools": "[parameters('loadBalancerBackendAddressPools')]"
     },
     "ipconfigurationDynamic": {
       "privateIPAllocationMethod": "Dynamic",
       "subnet": {
         "id": "[variables('VN_subnet_ID')]"
-      }
+      },
+      "loadBalancerBackendAddressPools": "[parameters('loadBalancerBackendAddressPools')]"
     },
     "datadiskSize": "[variables('vm').datadisk.sizeGB]",
     "datadiskDef": {

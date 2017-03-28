@@ -46,6 +46,7 @@
     <Content Include="availabilityset.parameters.json" />
     <Content Include="vm.json" />
     <Content Include="vm.parameters.json" />
+    <None Include="Script.ps1" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

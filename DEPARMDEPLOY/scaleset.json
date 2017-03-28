@@ -29,7 +29,8 @@
     "vm_nic_name": "[concat(variables('scaleSet_fullname'), '-NIC')]",
     "vm_ipconfig_name": "ipconfig",
     "loadbalancer": {
-      "name": "[parameters('scaleset').name]",
+      "name": "[variables('scaleSet_name')]",
+      "full_name": "[concat(resourceGroup().name, '-', variables('VN_subnet_name'), '-', variables('scaleSet_name'),'LB')]",
       "VN_subnet_name": "[variables('VN_subnet_name')]"
     },
     "LB_backendAddressPool": "LoadBalancerBackend",
@@ -53,7 +54,7 @@
   },
   "resources": [
     {
-      "name": "[concat(variables('scaleSet_fullname'),'LB')]",
+      "name": "[variables('loadbalancer').full_name]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -81,7 +82,7 @@
       "name": "[variables('scaleSet_fullname')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat(variables('scaleSet_fullname'),'LB')]"
+        "[variables('loadbalancer').full_name]"
       ],
       "sku": {
         "name": "[variables('vm_vmSize')]",
@@ -126,7 +127,7 @@
                         },
                         "loadBalancerBackendAddressPools": [
                           {
-                            "id": "[concat(reference(concat(variables('scaleSet_fullname'),'LB')).outputs.id.value,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
+                            "id": "[concat(reference(variables('loadbalancer').full_name).outputs.id.value,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
                           }
                         ]
                       }
