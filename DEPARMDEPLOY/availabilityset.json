@@ -101,13 +101,13 @@
             "value": "[variables('VN_name')]"
           },
           "loadBalancerBackendAddressPools": {
-            "value": 
-            [
+            "value": [
               {
                 "id": "[concat(reference(variables('loadbalancer').full_name).outputs.id.value,'/backendAddressPools/',variables('LB_backendAddressPool'))]"
               }
             ]
           }
+        }
       }
     }
   ],
